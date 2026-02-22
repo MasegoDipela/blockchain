@@ -1,0 +1,16 @@
+{
+  "name": "blockchain",
+  "version": "1.0.0",
+  "description": "An educational blockchain/digital-ledger implementation built in JavaScript (Node.js) as part of a structured learning sprint I am completing by freeCodeCamp's \"Learn Digital Ledgers by Building a Blockchain\".",
+  "main": "add-transaction.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "crypto-js": "^4.2.0"
+  }
+}

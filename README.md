@@ -1,8 +1,8 @@
 # Building a Digital Ledger (Blockchain) from Scratch — JavaScript
 
-An educational blockchain/digital-ledger implementation built in JavaScript (Node.js) as part of a structured learning sprint I am completing by freeCodeCamp’s “Learn Digital Ledgers by Building a Blockchain”.
+An educational blockchain/digital-ledger implementation built in JavaScript (Node.js) as part of a structured learning sprint I am completing by freeCodeCamp's "Learn Digital Ledgers by Building a Blockchain".
 
-This repo is intentionally focuses on the core *ledger* idea—**a chain of blocks where each block references the previous one**—and makes the data model and validation logic easy to inspect, extend, and discuss in interviews.
+This repo focuses on core blockchain concepts including proof-of-work mining, transaction handling, and cryptographic validation, making the data model and logic easy to inspect, extend, and discuss in interviews.
 
 ## Why this project
 
@@ -16,27 +16,32 @@ I’m building in the Web3 space because I’m genuinely interested in decentral
 ## What it does (today)
 
 - Stores a blockchain as an array of blocks persisted to disk (`blockchain.json`)
+- Stores pending transactions in a separate file (`transactions.json`)
 - Creates a genesis block (`init-blockchain.js`)
-- Appends new blocks that link to the previous block (`add-block.js`)
-- Validates the chain by checking block-to-block linkage (`validate-chain.js`)
+- Adds transactions to the pending pool (`add-transaction.js`)
+- Mines new blocks with proof-of-work, including pending transactions and a mining reward (`mine-block.js`)
+- Validates the chain by checking cryptographic integrity and block linkage (`validate-chain.js`)
 
 ### Block shape
 
-A block is currently represented as plain JSON like:
+A block is represented as plain JSON like:
 
 ```json
 {
-  "hash": "...",
-  "previousHash": "...",
-  "data": {
-    "fromAddress": "...",
-    "toAddress": "...",
-    "amount": ...
-  }
+  "nonce": 1191,
+  "hash": "004aeef7932d04399370cb191df97b26f9590187026d5305ce58ec0aa5d3c767",
+  "previousHash": "0",
+  "transactions": [
+    {
+      "fromAddress": "You",
+      "toAddress": "Me",
+      "amount": 12
+    }
+  ]
 }
 ```
 
-**Important note:** In this educational phase, `hash` is generated with `Math.random()` and is used as an identifier. The validator currently checks *linking* (`previousHash` matches the prior block’s `hash`), not cryptographic integrity.
+The `hash` is computed using SHA-256 with `nonce`, `previousHash`, and `transactions` to ensure integrity. The validator recomputes hashes to verify the chain.
 
 ## Quickstart
 
@@ -44,57 +49,76 @@ A block is currently represented as plain JSON like:
 - Node.js installed (modern Node recommended)
 - This repo cloned locally
 
+### Installation
+```bash
+npm install
+```
+
 ### 1) Initialize the chain (genesis block)
 ```bash
 node init-blockchain.js
 ```
 
-This creates/overwrites `blockchain.json` with a genesis block.
+This creates/overwrites `blockchain.json` with a genesis block and `transactions.json` with an empty array.
 
-### 2) Add a block (a simple “transaction” payload)
+### 2) Add transactions to the pending pool
 ```bash
-node add-block.js <fromAddress> <toAddress> <amount>
+node add-transaction.js <fromAddress> <toAddress> <amount>
 ```
 
 Example:
 ```bash
-node add-block.js Alice Bob 25
+node add-transaction.js Alice Bob 25
+node add-transaction.js Charlie Alice 10
 ```
 
-### 3) Validate the chain
+### 3) Mine a new block
+```bash
+node mine-block.js
+```
+
+This mines a block with the current pending transactions, adds a mining reward transaction, and appends the block to the chain. The pending transactions are replaced with the reward transaction.
+
+### 4) Validate the chain
 ```bash
 node validate-chain.js
 ```
 
 Outputs:
-- `Chain is valid` if every block correctly references the previous block
+- `Chain is valid` if every block correctly references the previous block and hashes are valid
 - `Chain is not valid` otherwise
 
 ## Project structure
 
-- `blockchain-helpers.js` — read/write helpers + `isValidChain()` implementation
-- `init-blockchain.js` — creates the genesis block and writes the chain to disk
-- `add-block.js` — appends a new block using CLI arguments
+- `blockchain-helpers.js` — read/write helpers for blockchain and transactions + `isValidChain()` implementation
+- `init-blockchain.js` — creates the genesis block and initializes the chain and transactions
+- `add-transaction.js` — adds a transaction to the pending pool using CLI arguments
+- `mine-block.js` — mines a new block with proof-of-work, including pending transactions and mining reward
 - `validate-chain.js` — prints validity based on `isValidChain()`
 - `blockchain.json` — persisted ledger state (generated at runtime)
+- `transactions.json` — pending transactions pool (generated at runtime)
 
 ## Design notes (what an employer/collaborator should know)
 
 - **Simple by design:** the goal is clarity of the ledger mechanics, not production-grade consensus.
-- **Explicit persistence:** the chain is stored as JSON on disk to keep the state inspectable and versionable during learning.
-- **Invariants enforced:** validation enforces the primary invariant of a linked history (`previousHash` → `hash`).
+- **Explicit persistence:** the chain and transactions are stored as JSON on disk to keep the state inspectable and versionable during learning.
+- **Invariants enforced:** validation enforces cryptographic integrity (recomputed hashes) and linked history (`previousHash` → `hash`).
+- **Proof-of-Work:** mining requires finding a nonce that makes the hash start with a certain number of zeros.
 
 ## Roadmap (bringing it closer to a real blockchain)
 
+Completed features:
+
+1. **Deterministic hashing (SHA-256)** ✓
+   - Compute `hash = SHA256(nonce + previousHash + transactions)`
+   - Validate by recomputing hashes rather than trusting stored values
+2. **Proof-of-Work** ✓
+   - Add `nonce` + a difficulty target (e.g., leading zeros)
+3. **Transaction model** ✓
+   - Separate transactions from blocks (mempool → mined blocks)
+
 Planned extensions (in order of value for learning and correctness):
 
-1. **Deterministic hashing (SHA-256)**
-   - Compute `hash = SHA256(previousHash + timestamp + data + nonce)`
-   - Validate by recomputing hashes rather than trusting stored values
-2. **Proof-of-Work**
-   - Add `nonce` + a difficulty target (e.g., leading zeros)
-3. **Transaction model**
-   - Separate transactions from blocks (mempool → mined blocks)
 4. **Public/private key signatures**
    - Sign transactions, verify signatures, prevent spoofing
 5. **Balance calculation + basic rules**
