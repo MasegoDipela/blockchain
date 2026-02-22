@@ -13,9 +13,8 @@ const transactions = getTransactions();
 let nonce = 0;
 
 let hash = sha256(nonce + previousBlock.hash + JSON.stringify(transactions)).toString();
-console.log(hash);
 
-const difficulty = 4; 
+const difficulty = 2; 
 
 while (!hash.startsWith('0'.repeat(difficulty))){
   nonce++;
@@ -23,16 +22,19 @@ while (!hash.startsWith('0'.repeat(difficulty))){
   
 }
 
-console.log(`nonce = ${nonce}`); 
-console.log(`hash = ${hash}`);
-
 const newBlock = {
+  nonce: nonce, 
   hash: hash,
   previousHash: previousBlock.hash,
   transactions
 }
 
-blockchain.push(newBlock);
+const rewardTransaction = {
+  fromAddress: null,
+  toAddress: 'Me',
+  amount: 50,
+};
 
-//writeBlockchain(blockchain);
-//writeTransactions([]);
+blockchain.push(newBlock);
+writeBlockchain(blockchain);
+writeTransactions([rewardTransaction]);

@@ -5,12 +5,11 @@ const toAddress = process.argv[3];
 const amount = parseInt(process.argv[4]);
 
 const newTransaction = {
-    fromAddress,
-    toAddress,
-    amount
+  fromAddress,
+  toAddress,
+  amount
 }
 
 const transactions = getTransactions();
 transactions.push(newTransaction);
-
 writeTransactions(transactions);
