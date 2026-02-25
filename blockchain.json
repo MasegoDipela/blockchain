@@ -4,26 +4,27 @@
     "previousHash": null
   },
   {
-    "nonce": 1191,
-    "hash": "004aeef7932d04399370cb191df97b26f9590187026d5305ce58ec0aa5d3c767",
+    "nonce": 39,
+    "hash": "009b0ffdf8024c9fad6291d8b00915d23965a6ed55ba8ed680549076152705fb",
     "previousHash": "0",
+    "transactions": []
+  },
+  {
+    "nonce": 930,
+    "hash": "00c23c20fec7b56b1f9701c07387d8f501e1901b467ca414e2a4d23712dd845f",
+    "previousHash": "009b0ffdf8024c9fad6291d8b00915d23965a6ed55ba8ed680549076152705fb",
     "transactions": [
       {
-        "fromAddress": "You",
+        "fromAddress": null,
         "toAddress": "Me",
-        "amount": 12
-      },
-      {
-        "fromAddress": "You",
-        "toAddress": "Me",
-        "amount": 16
+        "amount": 50
       }
     ]
   },
   {
-    "nonce": 292,
-    "hash": "0084767ff234c44bf26a9a822312cf4ff2916356d403ed6de308a676d3def740",
-    "previousHash": "004aeef7932d04399370cb191df97b26f9590187026d5305ce58ec0aa5d3c767",
+    "nonce": 40,
+    "hash": "006d0fd2f22fbb1701fc4c90f2ee5ea032092da5cb26bff259b9fce552ac8cf9",
+    "previousHash": "00c23c20fec7b56b1f9701c07387d8f501e1901b467ca414e2a4d23712dd845f",
     "transactions": [
       {
         "fromAddress": null,
@@ -31,26 +32,10 @@
         "amount": 50
       },
       {
-        "fromAddress": "You",
-        "toAddress": "Me",
-        "amount": 20
-      }
-    ]
-  },
-  {
-    "nonce": 135,
-    "hash": "0073ae63ea27747fe8c0555fcbc3c4646e5e0cd226b29109c25542674dedde12",
-    "previousHash": "0084767ff234c44bf26a9a822312cf4ff2916356d403ed6de308a676d3def740",
-    "transactions": [
-      {
-        "fromAddress": null,
-        "toAddress": "Me",
-        "amount": 50
-      },
-      {
-        "fromAddress": "You",
-        "toAddress": "Me",
-        "amount": 10
+        "hash": "35e19e0b0532e0073d20125e2818c5751507c63feb5954726e4c101e27752a12",
+        "fromAddress": "Me",
+        "toAddress": "You",
+        "amount": 40
       }
     ]
   }
