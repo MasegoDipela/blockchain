@@ -18,7 +18,8 @@ I’m building in the Web3 space because I’m genuinely interested in decentral
 - Stores a blockchain as an array of blocks persisted to disk (`blockchain.json`)
 - Stores pending transactions in a separate file (`transactions.json`)
 - Creates a genesis block (`init-blockchain.js`)
-- Adds transactions to the pending pool (`add-transaction.js`)
+- Adds transactions to the pending pool with balance validation (`add-transaction.js`)
+- Queries the balance of any address by scanning the chain (`get-address-balance.js`)
 - Mines new blocks with proof-of-work, including pending transactions and a mining reward (`mine-block.js`)
 - Validates the chain by checking cryptographic integrity and block linkage (`validate-chain.js`)
 
@@ -79,7 +80,17 @@ node mine-block.js
 
 This mines a block with the current pending transactions, adds a mining reward transaction, and appends the block to the chain. The pending transactions are replaced with the reward transaction.
 
-### 4) Validate the chain
+### 4) Check an address balance
+```bash
+node get-address-balance.js <address>
+```
+
+Example:
+```bash
+node get-address-balance.js Alice
+```
+
+### 5) Validate the chain
 ```bash
 node validate-chain.js
 ```
@@ -90,9 +101,10 @@ Outputs:
 
 ## Project structure
 
-- `blockchain-helpers.js` — read/write helpers for blockchain and transactions + `isValidChain()` implementation
+- `blockchain-helpers.js` — read/write helpers for blockchain and transactions + `isValidChain()` and `getAddressBalance()` implementation
 - `init-blockchain.js` — creates the genesis block and initializes the chain and transactions
-- `add-transaction.js` — adds a transaction to the pending pool using CLI arguments
+- `add-transaction.js` — adds a transaction to the pending pool using CLI arguments (rejects if sender has insufficient funds)
+- `get-address-balance.js` — prints the balance for a given address by scanning the chain
 - `mine-block.js` — mines a new block with proof-of-work, including pending transactions and mining reward
 - `validate-chain.js` — prints validity based on `isValidChain()`
 - `blockchain.json` — persisted ledger state (generated at runtime)
@@ -116,13 +128,15 @@ Completed features:
    - Add `nonce` + a difficulty target (e.g., leading zeros)
 3. **Transaction model** ✓
    - Separate transactions from blocks (mempool → mined blocks)
+   - Hash each transaction with `SHA256(fromAddress + toAddress + amount)` for integrity
+4. **Balance calculation + basic rules** ✓
+   - Compute balances by scanning the chain (`getAddressBalance`)
+   - Prevent overspending — transactions are rejected if the sender has insufficient funds
 
 Planned extensions (in order of value for learning and correctness):
 
-4. **Public/private key signatures**
+5. **Public/private key signatures**
    - Sign transactions, verify signatures, prevent spoofing
-5. **Balance calculation + basic rules**
-   - Prevent overspending (UTXO-style or account-based)
 6. **Testing**
    - Unit tests for hashing, validation, and edge cases
 7. **Networking (optional)**
